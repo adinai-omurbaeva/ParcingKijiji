@@ -1,21 +1,26 @@
 from peewee import *
- 
-class BaseModel(Model):
-    class Meta:
-        database = dbhandle
- 
- 
-class Ad(BaseModel):
-    id = PrimaryKeyField(null=False)
-    image = CharField(max_length=255)
-    title = CharField(max_length=255)
-    location = CharField(max_length=255)
-    date = DateField()
-    bedrooms = CharField(max_length=255)
-    description = CharField(max_length=255)
-    price = CharField(max_length=255)
-    currency = CharField(max_length=255)
+import psycopg2
+
+conn = psycopg2.connect(host='localhost', user='postgres', password='postgres')
+conn.cursor().execute('CREATE DATABASE mydatabase')
+conn.close()
+
+db = PostgresqlDatabase('mydatabase', host='localhost', port=5432, user='postgres', password='postgres')
+
+class Ads(Model):
+    image = TextField(max_length=255)
+    title = TextField(max_length=255)
+    location = TextField(max_length=255)
+    date = TextField()
+    bedrooms = TextField(max_length=255)
+    description = TextField(max_length=255)
+    price = TextField(max_length=255)
+    currency = TextField(max_length=255)
 
     class Meta:
-        db_table = "ads"
-        order_by = ('date',)
+        database = db
+        db_table = 'Ads'
+
+db.connect()
+db.create_tables([Ads])
+db.close
